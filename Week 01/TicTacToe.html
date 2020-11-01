@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>TicTacToe 代码作业</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+      .board {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .cell {
+        width: 100px;
+        height: 100px;
+        vertical-align: middle;
+        text-align: center;
+        background-color: #ece4db;
+        display: inline-block;
+        line-height: 100px;
+        font-size: 33px;
+        border: 1px solid #b9ada1;
+        color: #8a847d;
+        font-weight: bold;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board"></div>
+    <div id="info"></div>
+    <button id="btnRestart" class="hidden" onclick="restartGame()">
+      重新开始
+    </button>
+    <script type="text/javascript">
+      let chessboard = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ]
+      let color = 1
+      let isFinished = false
+
+      renderboard()
+
+      function renderboard() {
+        let board = document.getElementById("board")
+        board.innerHTML = ""
+        // console.log(board)
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            let cell = document.createElement("div")
+            cell.classList.add("cell")
+            cell.innerText =
+              chessboard[i][j] == 2 ? "x" : chessboard[i][j] == 1 ? "o" : ""
+            cell.addEventListener("click", () => setpiece(j, i))
+            board.appendChild(cell)
+          }
+          board.appendChild(document.createElement("br"))
+        }
+      }
+
+      function setpiece(x, y) {
+        if (isFinished) {
+          console.log("game over")
+          return
+        }
+        if (chessboard[y][x] != 0) {
+          alert("该格子已落子，请在空位落子。")
+          return
+        }
+        chessboard[y][x] = color
+        if (check(chessboard, color, true)) {
+          let info = document.getElementById("info")
+          info.innerText = color == 2 ? "x is winner!" : "o is winner!"
+          document.getElementById("btnRestart").classList.remove("hidden")
+        }
+        color = 3 - color
+        console.log(bestChoice(chessboard, color))
+        renderboard()
+        if (willWin(chessboard, color)) {
+          console.log(color == 2 ? "x will win!" : "o will win!")
+        }
+
+        let steps = 0
+        chessboard.flat().forEach((element) => {
+          element !== 0 ? (steps = steps + 1) : ""
+        })
+        if (steps == 9) {
+          isFinished = true
+          document.getElementById("btnRestart").classList.remove("hidden")
+          console.log("game over")
+        }
+      }
+
+      function check(chessboard, color, checkfinish) {
+        for (let i = 0; i < 3; i++) {
+          let win = true
+          for (let j = 0; j < 3; j++) {
+            if (chessboard[i][j] !== color) {
+              win = false
+            }
+          }
+          if (win) {
+            checkfinish ? (isFinished = true) : ""
+            return true
+          }
+        }
+        for (let i = 0; i < 3; i++) {
+          let win = true
+          for (let j = 0; j < 3; j++) {
+            if (chessboard[j][i] !== color) {
+              win = false
+            }
+          }
+          if (win) {
+            checkfinish ? (isFinished = true) : ""
+            return true
+          }
+        }
+        {
+          let win = true
+          for (let i = 0; i < 3; i++) {
+            if (chessboard[i][i] !== color) {
+              win = false
+            }
+          }
+          if (win) {
+            checkfinish ? (isFinished = true) : ""
+            return true
+          }
+        }
+        {
+          let win = true
+          for (let i = 0; i < 3; i++) {
+            if (chessboard[i][2 - i] !== color) {
+              win = false
+            }
+          }
+          if (win) {
+            checkfinish ? (isFinished = true) : ""
+            return true
+          }
+        }
+      }
+
+      function clone(arr) {
+        return JSON.parse(JSON.stringify(arr))
+      }
+
+      function willWin(chessboard, color) {
+        if (isFinished) {
+          return null
+        }
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (chessboard[i][j]) {
+              continue
+            }
+            let temp = clone(chessboard)
+            temp[i][j] = color
+            if (check(temp, color, false)) {
+              return [j, i]
+            }
+          }
+        }
+        return null
+      }
+
+      function bestChoice(chessboard, color) {
+        let p
+        if ((p = willWin(chessboard, color))) {
+          return {
+            point: p,
+            result: 1,
+          }
+        }
+        let result = -2
+        let point = null
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (chessboard[i][j]) {
+              continue
+            }
+            let temp = clone(chessboard)
+            temp[i][j] = color
+            let r = bestChoice(temp, 3 - color).result
+            if (-r > result) {
+              result = -r
+              point = [j, i]
+            }
+          }
+        }
+        return {
+          point: point,
+          result: point ? result : 0,
+        }
+      }
+
+      function restartGame() {
+        chessboard = [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+        ]
+        color = 1
+        isFinished = false
+        document.getElementById("info").innerText = ""
+        document.getElementById("btnRestart").classList.add("hidden")
+        renderboard()
+      }
+    </script>
+  </body>
+</html>
