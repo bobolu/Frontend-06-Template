@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>3.1 使用LL算法构建AST ｜ 四则运算</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript"></script>
+    <style type="text/css">
+    </style>
+    <script type="text/javascript">
+      const regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+      const dictionary = [
+        "Number",
+        "Whitespace",
+        "LineTerminator",
+        "*",
+        "/",
+        "+",
+        "-"
+      ]
+      const tokenize = (source) => {
+        let result = null
+        while (true) {
+          result = regexp.exec(source)
+          if (!result) break
+          for (let i = 1; i <= dictionary.length; i++) {
+            if (result[i]) console.log(dictionary[i - 1])
+          }
+          console.log(result)
+        }
+      }
+      tokenize("1024 + 11 * 10")
+    </script>
+  </head>
+  <body></body>
+</html>
