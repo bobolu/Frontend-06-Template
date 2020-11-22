@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>leetcode 28题 kmp 算法题</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript">
+      // leetcode 28题 kmp 算法题，适合在长字符串里找模式
+      var strStr = function (haystack, needle) {
+        let index = -1
+        let table = new Array(needle.length).fill(0)
+        {
+          let i = 1
+          let j = 0
+          while (i < needle.length) {
+            if (needle[i] === needle[j]) {
+              ++i
+              ++j
+              table[i] = j
+            } else {
+              if (j > 0) {
+                j = table[j]
+              } else {
+                ++i
+              }
+            }
+          }
+        }
+        // 匹配
+        {
+          let i = 0
+          let j = 0
+          while (i < haystack.length) {
+            if (needle[j] === haystack[i]) {
+              index = i
+              ++i
+              ++j
+            } else {
+              if (j > 0) {
+                j = table[j]
+              } else {
+                ++i
+              }
+            }
+            if (j === needle.length) {
+              console.log(haystack, "匹配", needle,"index为：", index - needle.length + 1)
+              return index - needle.length + 1
+            }
+          }
+          console.log("false table:", table)
+          if (needle === "") {
+            console.log(haystack, "匹配", needle,':空')
+            return 0
+          } else {
+            console.log(haystack, "匹配", needle,':无')
+            return -1
+          }
+        }
+      }
+      strStr("hellollad", "lla")
+    </script>
+  </head>
+  <body></body>
+</html>
