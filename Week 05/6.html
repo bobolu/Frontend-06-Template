@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>5.8 使用Range实现DOM精确操作 | 正常流里的拖拽</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript"></script>
+    <style type="text/css"></style>
+  </head>
+  <body>
+    <div id="container">
+      父亲写的散文诗（时光版）作词：董玉方 作曲：许飞 演唱：许飞 一九八四年
+      庄稼还没收割完 女儿躺在我怀里 睡得那么甜 今晚的露天电影 没时间去看
+      妻子提醒我 修修缝纫机的踏板 明天我要去 邻居家再借点钱 孩子哭了一整天啊
+      闹着要吃饼干 蓝色的涤卡上衣 痛往心里钻 蹲在池塘边上 给了自己两拳
+      这是我父亲 日记里的文字 这是他的青春留下 留下来的散文诗 几十年后
+      我看着泪流不止 可我的父亲已经 老得像一个影子 一九九四年 庄稼早已收割完
+      我的老母亲去年 离开了人间 女儿扎着马尾辫 跑进了校园 可是她最近
+      有点孤单瘦了一大圈 想一想未来 我老成了一堆旧纸钱 那时的女儿一定
+      会美得很惊艳 有个爱她的男人 要娶她回家 可想到这些 我却不忍看她一眼
+      这是我父亲 日记里的文字 这是他的生命 留下 留下来的散文诗 几十年后
+      我看着泪流不止 可我的父亲已经老得像一张旧报纸 旧报纸 那上面的故事
+      就是一辈子
+    </div>
+    <div
+      id="dragable"
+      style="
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: blue;
+        display: inline-block;
+      "
+    ></div>
+    <script type="text/javascript">
+      let dragable = document.getElementById("dragable")
+      let baseX = 0,
+        baseY = 0
+      dragable.addEventListener("mousedown", function (event) {
+        let startX = event.clientX,
+          startY = event.clientY
+
+        let up = (event) => {
+          baseX = baseX + event.clientX - startX
+          baseY = baseY + event.clientY - startY
+          document.removeEventListener("mousemove", move)
+          document.removeEventListener("mouseup", up)
+        }
+
+        let move = (event) => {
+          // dragable.style.transform = `translate(${
+          //   baseX + event.clientX - startX
+          // }px, ${baseY + event.clientY - startY}px)`
+          let range = getNearest(event.clientX, event.clientY)
+          range.insertNode(dragable)
+        }
+
+        document.addEventListener("mousemove", move)
+        document.addEventListener("mouseup", up)
+      })
+
+      let ranges = []
+      let container = document.getElementById("container")
+      for (let i = 0; i < container.childNodes[0].textContent.length; i++) {
+        let range = document.createRange()
+        range.setStart(container.childNodes[0], i)
+        range.setEnd(container.childNodes[0], i)
+
+        console.log(range.getBoundingClientRect())
+        ranges.push(range)
+      }
+      function getNearest(x, y) {
+        let min = Infinity
+        let nearest = null
+        for (let item of ranges) {
+          let rect = item.getBoundingClientRect()
+          let distance = Math.sqrt((rect.x - x) ** 2 + (rect.y - y) ** 2)
+          if (distance < min) {
+            nearest = item
+            min = distance
+          }
+        }
+        return nearest
+      }
+      document.addEventListener("selectstart", (event) =>
+        event.preventDefault()
+      )
+    </script>
+  </body>
+</html>
