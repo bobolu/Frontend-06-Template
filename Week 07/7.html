@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>Realm对象 可视化</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript"></script>
+    <style type="text/css"></style>
+  </head>
+  <body>
+    <div id="wrap"></div>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-4.0.3/dist/g6.min.js"></script>
+
+    <script>
+      function getRealm() {
+        let map = new Map();
+        let set = new Set();
+        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects
+        let objectsArray = [
+          "Number",
+          "String",
+          "Boolean",
+          "Object",
+          "Array",
+          "Function",
+          "Symbol",
+
+          // 数字和日期对象
+          "Infinity",
+          "BigInt",
+          "Math",
+          "Date",
+          "RegExp",
+
+          // 使用键的集合对象
+          "Map",
+          "Set",
+          "WeakMap",
+          "WeakSet",
+
+          // 反射代理
+          "Reflect",
+          "Proxy",
+
+          // 结构化数据
+          "JSON",
+          "ArrayBuffer",
+          "Atomics",
+          "DataView",
+          "SharedArrayBuffer",
+
+          // 控制抽象对象
+          "Promise",
+
+          //错误
+          "Error",
+          "AggregateError",
+          "EvalError",
+          "InternalError",
+          "RangeError",
+          "ReferenceError",
+          "SyntaxError",
+          "TypeError",
+          "URIError",
+
+          //函数属性，全局函数可以直接调用，不需要在调用时指定所属对象，执行结束后会将结果直接返回给调用者。
+          "eval",
+          "uneval",
+          "isFinite",
+          "isNaN",
+          "parseFloat",
+          "parseInt",
+          "decodeURI",
+          "decodeURIComponent",
+          "encodeURI",
+          "encodeURIComponent",
+          // escape 和 unescape 已废弃
+          // 还有可索引的集合对象 Array、Int8Array、Uint8Array、Uint8ClampedArray、Int16Array、Uint16Array、Int32Array、Uint32Array、Float32Array、Float64Array、BigInt64Array、BigUint64Array
+          "Int8Array",
+          "Uint8Array",
+          "Uint8ClampedArray",
+          "Int16Array",
+          "Uint16Array",
+          "Int32Array",
+          "Uint32Array",
+          "Float32Array",
+          "Float64Array",
+          "BigInt64Array",
+          "BigUint64Array"
+        ];
+
+        let result = { id: "realm", children: [] };
+
+        // 基本抄袭了优秀作业的实现过程，需要再消化
+        
+        objectsArray.forEach((item) => {
+          if (window[item]) {
+            map.set(item, window[item]);
+            result.children.push({
+              id: item,
+              children: []
+            });
+          }
+        });
+
+        let realmChildrenQueue = [...result.children];
+
+        while (realmChildrenQueue.length) {
+          let child = realmChildrenQueue.shift();
+          let id = child.id;
+          let obj = map.get(id);
+          if (set.has(obj)) continue;
+          set.add(obj);
+
+          for (const prop of Object.getOwnPropertyNames(obj)) {
+            let desc = Object.getOwnPropertyDescriptor(obj, prop);
+            const pushChild = (type = "value") => {
+              let name =
+                type === "value" ? `${id}.${prop}` : `${id}.${prop}.[${type}]`;
+              let o = {
+                id: name,
+                children: []
+              };
+              map.set(name, desc[type]);
+              child.children.push(o);
+
+              realmChildrenQueue.push(o);
+            };
+            if (
+              (desc.value !== null && typeof desc.value === "object") ||
+              typeof desc.value === "function"
+            ) {
+              pushChild();
+            }
+            if (desc.get) pushChild("get");
+            if (desc.set) pushChild("set");
+          }
+        }
+        return result;
+      }
+
+      function render(data) {
+        const graph = new G6.TreeGraph({
+          container: "wrap",
+          width: window.innerWidth,
+          height: window.innerHeight,
+          pixelRatio: 2,
+          modes: {
+            default: [
+              {
+                type: "collapse-expand",
+                onChange: function onChange(item, collapsed) {
+                  var data = item.get("model").data;
+                  data.collapsed = collapsed;
+                  return true;
+                }
+              },
+              "drag-canvas",
+              "zoom-canvas"
+            ]
+          },
+          defaultNode: {
+            size: 16,
+            anchorPoints: [
+              [0, 0.5],
+              [1, 0.5]
+            ],
+            style: {
+              fill: "#40a9ff",
+              stroke: "#096dd9"
+            }
+          },
+          defaultEdge: {
+            type: "cubic-horizontal",
+            style: {
+              stroke: "#A3B1BF"
+            }
+          },
+          layout: {
+            type: "compactBox",
+            direction: "LR",
+            getId: function getId(d) {
+              return d.id;
+            },
+            getHeight: function getHeight() {
+              return 16;
+            },
+            getWidth: function getWidth() {
+              return 16;
+            },
+            getVGap: function getVGap() {
+              return 10;
+            },
+            getHGap: function getHGap() {
+              return 100;
+            }
+          }
+        });
+
+        let centerX = 0;
+        graph.node(function (node) {
+          return {
+            size: 26,
+            style: {
+              fill: "#40a9ff",
+              stroke: "#096dd9"
+            },
+            label: node.id,
+            labelCfg: {
+              position:
+                node.children && node.children.length > 0 ? "left" : "right"
+            }
+          };
+        });
+
+        graph.data(data);
+        graph.render();
+        graph.fitView();
+      }
+      render(getRealm());
+    </script>
+  </body>
+</html>
