@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript">
+      function findChar(str) {
+        let foundIndex = [];
+        for (let chars of str) {
+          if (chars === "a") {
+            foundIndex = [1];
+          } else if (foundIndex[0] && chars === "b" && foundIndex.length < 2) {
+            foundIndex = [1, 1];
+          } else if (
+            foundIndex[0] &&
+            foundIndex[1] &&
+            chars === "c" &&
+            foundIndex.length < 3
+          ) {
+            foundIndex = [1, 1, 1];
+          } else if (
+            foundIndex[0] &&
+            foundIndex[1] &&
+            foundIndex[2] &&
+            chars === "d" &&
+            foundIndex.length < 4
+          ) {
+            foundIndex = [1, 1, 1, 1];
+          } else if (
+            foundIndex[0] &&
+            foundIndex[1] &&
+            foundIndex[2] &&
+            foundIndex[3] &&
+            chars === "e" &&
+            foundIndex.length < 5
+          ) {
+            foundIndex = [1, 1, 1, 1, 1];
+          } else if (
+            foundIndex[0] &&
+            foundIndex[1] &&
+            foundIndex[2] &&
+            foundIndex[3] &&
+            foundIndex[4] &&
+            chars === "f"
+          ) {
+            foundIndex = [1, 1, 1, 1, 1, 1];
+            return true;
+          } else {
+            foundIndex = [];
+          }
+        }
+        return false;
+      }
+      findChar("abccdef");
+      findChar("abbccddeef");
+      findChar("abcdeabcabceabcdef");
+
+
+      function matchChar(str) {
+        let state = start
+        for(let chars of str) {
+          state = state(chars)
+        }
+        return state === end
+      }
+
+      function start(chars) {
+        if(chars === "a") {
+          return foundA
+        } else {
+          return start
+        }
+      }
+
+      function end(chars) {
+        return end
+      }
+
+      function foundA(chars) {
+        if(chars === "b") {
+          return foundB
+        } else {
+          return start(chars)
+        }
+      }
+      function foundB(chars) {
+        if(chars === "c") {
+          return foundC
+        } else {
+          return start(chars)
+        }
+      }
+      function foundC(chars) {
+        if(chars === "d") {
+          return foundD
+        } else {
+          return start(chars)
+        }
+      }
+      function foundD(chars) {
+        if(chars === "e") {
+          return foundE
+        } else {
+          return start(chars)
+        }
+      }
+      function foundE(chars) {
+        if(chars === "f") {
+          return end
+        } else {
+          return start(chars)
+        }
+      }
+
+
+    </script>
+    <style type="text/css"></style>
+  </head>
+  <body></body>
+</html>
