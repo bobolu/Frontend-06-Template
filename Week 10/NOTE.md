@@ -19,8 +19,8 @@ toy browser 实现 flex 排版算法为例，分主轴和交叉轴，来计算�
 ### tips：主要的排版模式
 - 正常流
 - flex 模式
-- grid 模式
-- Houdini 模式 [CSS Houdini_MDN]
+- grid 模式 [Basic_Concepts_of_Grid_Layout@MDN]
+- Houdini 模式 [CSS_Houdini@MDN]
 
  
 ## render 渲染
@@ -38,4 +38,8 @@ toy browser 实现 flex 排版算法为例，分主轴和交叉轴，来计算�
 
 为期三周的浏览器工作原理到此完结了，通过 toy browser 的开发过程，加深了对浏览器工作原理的理解。从 URL 请求得到 HTML 代码，解析得到 DOM 树，计算 CSS 属性，根据属性来排版布局，最后绘制渲染完成内容呈现。
 
-[CSS Houdini_MDN]: https://developer.mozilla.org/zh-CN/docs/Web/Houdini
+[Basic_Concepts_of_Grid_Layout@MDN]: https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout
+
+[CSS_Houdini@MDN]: https://developer.mozilla.org/zh-CN/docs/Web/Houdini
+
+
