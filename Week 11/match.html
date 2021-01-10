@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>match</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript">
+    </script>
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <div>
+        <div id="id" class="class">
+            <p class="p" id="p">
+                <span id="mysp"></span>
+                <span class="mysp"></span>
+            </p>
+            <p>      
+            </p>
+            <p></p>
+
+        </div>
+        <p id="pAfterDiv"></p>
+    </div>
+
+<script>
+  // div #id.class
+  function match(selector, element) {
+
+      // 通配符和标签选择器
+      if (selector === "*" || selector.toLowerCase() === element.tagName.toLowerCase()) {
+          return true
+      }
+
+      let selectors = selector.split(' ').reverse()
+      let index = 0
+      let currentElement = element
+
+      while (currentElement.parentElement !== null && index < selectors.length) {
+        
+        if (checkItem(selectors[index], currentElement)) {
+            index++
+            console.log('i=',index)
+        };
+        currentElement = currentElement.parentElement;
+      }
+      if(index === selectors.length) {
+          return true
+      } else {
+        return false;          
+      }
+      return true;
+      
+      function checkItem(item, currentElement) {
+        let reverseStr = item.split('').reverse().join('')
+        let token = ''
+        let matched = false
+        for (let char of reverseStr) {
+            if (char === "#") {
+                 if(token === currentElement.id)
+                 {
+                    token = ''
+                    matched =  true
+                    continue
+                 } else {
+                    return false
+                 }
+            }
+            if (char === ".") {
+                if(currentElement.className.includes(token)) {
+                    token = ''
+                    matched =  true
+                    continue
+                } else {
+                    return false
+                }
+            }
+            token = char + token
+        }
+        if(token) {
+            if(currentElement.tagName.toLowerCase() === token) {
+                matched =  true
+            } else {
+                return false
+            }
+        }
+        return true;
+      }  
+  }
+// div #id.class
+console.log(match("div .mysp", document.getElementById("mysp")))
+console.log(match("div #id.class", document.getElementById("id")))
+</script>
+</body>
+  </html>
