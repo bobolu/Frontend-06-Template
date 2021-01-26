@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul>
+      <li></li>
+    </ul>
+    <script>
+      let names = Object.getOwnPropertyNames(window);
+
+      function filterOut(names, props) {
+        let set = new Set();
+        props.forEach((o) => {
+          set.add(o);
+        });
+        return names.filter((e) => !set.has(e));
+      }
+
+      console.log("init length:", names.length);
+      // ECMA 262
+      // https://262.ecma-international.org/11.0/index.html
+      {
+        let js = new Set();
+        let objects = ["globalThis", "BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"];
+        objects.forEach((element) => js.add(element));
+        names = names.filter((e) => !js.has(e));
+      }
+
+      // DOM API Subclass of Node
+      names = names
+        .filter((e) => {
+          try {
+            return !(window[e].prototype instanceof Node);
+            // [Deprecation] 'window.webkitStorageInfo' is deprecated.
+          } catch (err) {
+            return true;
+          }
+        })
+        .filter((e) => e != "Node");
+
+      // 事件 api
+      names = names.filter((e) => !e.toLowerCase().match(/^on/));
+
+      // webkit 私有属性
+      names = names.filter((e) => !e.toLowerCase().match(/^webkit/));
+
+      // window 对象属性
+      // https://html.spec.whatwg.org/#window
+      {
+        let names = Object.getOwnPropertyNames(window);
+        let js = new Set();
+        let objects = ["BigInt", "BigInt64Array", "BigUint64Array", "Infinity", "NaN", "undefined", "eval", "isFinite", "isNaN", "parseFloat", "parseInt", "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent", "Array", "Date", "RegExp", "Promise", "Proxy", "Map", "WeakMap", "Set", "WeakSet", "Function", "Boolean", "String", "Number", "Symbol", "Object", "Error", "EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "ArrayBuffer", "SharedArrayBuffer", "DataView", "Float32Array", "Float64Array", "Int8Array", "Int16Array", "Int32Array", "Uint8Array", "Uint16Array", "Uint32Array", "Uint8ClampedArray", "Atomics", "JSON", "Math", "Reflect", "escape", "unescape"];
+        objects.forEach((o) => js.add(o));
+        names = names.filter((e) => !js.has(e));
+
+        names = names
+          .filter((e) => {
+            try {
+              return !(window[e].prototype instanceof Node);
+            } catch (err) {
+              return true;
+            }
+          })
+          .filter((e) => e != "Node");
+
+        let windowprops = new Set();
+        objects = ["window", "self", "document", "name", "location", "history", "customElements", "locationbar", "menubar", " personalbar", "scrollbars", "statusbar", "toolbar", "status", "close", "closed", "stop", "focus", " blur", "frames", "length", "top", "opener", "parent", "frameElement", "open", "navigator", "applicationCache", "alert", "confirm", "prompt", "print", "postMessage", "console"];
+        objects.forEach((o) => windowprops.add(o));
+        names = names.filter((e) => !windowprops.has(e));
+      }
+
+      // whatwg HTML规范中已有部分 api
+      // https://html.spec.whatwg.org/
+      {
+        let interfaces = new Set();
+        objects = ["ApplicationCache", "AudioTrack", "AudioTrackList", "BarProp", "BeforeUnloadEvent", "BroadcastChannel", "CanvasGradient", "CanvasPattern", "CanvasRenderingContext2D", "CloseEvent", "CustomElementRegistry", "DOMStringList", "DOMStringMap", "DataTransfer", "DataTransferItem", "DataTransferItemList", "DedicatedWorkerGlobalScope", "Document", "DragEvent", "ErrorEvent", "EventSource", "External", "FormDataEvent", "HTMLAllCollection", "HashChangeEvent", "History", "ImageBitmap", "ImageBitmapRenderingContext", "ImageData", "Location", "MediaError", "MessageChannel", "MessageEvent", "MessagePort", "MimeType", "MimeTypeArray", "Navigator", "OffscreenCanvas", "OffscreenCanvasRenderingContext2D", "PageTransitionEvent", "Path2D", "Plugin", "PluginArray", "PopStateEvent", "PromiseRejectionEvent", "RadioNodeList", "SharedWorker", "SharedWorkerGlobalScope", "Storage", "StorageEvent", "TextMetrics", "TextTrack", "TextTrackCue", "TextTrackCueList", "TextTrackList", "TimeRanges", "TrackEvent", "ValidityState", "VideoTrack", "VideoTrackList", "WebSocket", "Window", "Worker", "WorkerGlobalScope", "WorkerLocation", "WorkerNavigator"];
+        objects.forEach((o) => interfaces.add(o));
+
+        names = names.filter((e) => !interfaces.has(e));
+      }
+
+      // Intl
+      // https://402.ecma-international.org/5.0/#intl-object
+      names = names.filter((e) => e != "Intl");
+
+      // Fetch
+      // https://fetch.spec.whatwg.org/
+      names = filterOut(names, ["fetch"]);
+
+      // Fullscreen API
+      // names = filterOut(names, ["requestFullscreen","exitFullscreen"]);
+
+      // HTML
+      // https://html.spec.whatwg.org/multipage/
+
+      // MIME Sniffing
+      // https://mimesniff.spec.whatwg.org/
+      // https://html.spec.whatwg.org/multipage/#mimetype
+
+      // Notifications API
+      // https://notifications.spec.whatwg.org/
+      names = filterOut(names, ["Notification"]);
+
+      // Storage
+      // https://storage.spec.whatwg.org/
+      // https://html.spec.whatwg.org/multipage/#storage
+      names = filterOut(names, ["sessionStorage", "localStorage", "Storage", "StorageEvent"]);
+
+      // URL
+      // https://url.spec.whatwg.org/
+      names = filterOut(names, ["URL"]);
+
+      // XMLHttpRequest
+      // https://xhr.spec.whatwg.org/
+      names = filterOut(names, ["XMLHttpRequest", "XMLHttpRequestUpload", "XMLHttpRequestEventTarget"]);
+
+      // 不属于 window 对象，又不属于 javaScript Global 对象的属性
+
+      // ECMAScript 2018 Internationalization API
+      names = names.filter((e) => e != "Intl");
+
+      // Console
+      // https://console.spec.whatwg.org/
+      names = filterOut(names, ["console"]);
+
+      // dom
+      // https://dom.spec.whatwg.org/
+
+      // khronos WebGL 相关 API
+      //https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15
+      names = filterOut(names, ["WebGLVertexArrayObject", "WebGLTransformFeedback", "WebGLSync", "WebGLSampler", "WebGLQuery", "WebGL2RenderingContext", "WebGLContextEvent", "WebGLObject", "WebGLBuffer", "WebGLFramebuffer", "WebGLProgram", "WebGLRenderbuffer", "WebGLShader", "WebGLTexture", "WebGLUniformLocation", "WebGLActiveInfo", "WebGLShaderPrecisionFormat", "WebGLRenderingContext"]);
+
+      // Web Audio 相关 API
+      // https://www.w3.org/TR/webaudio/
+      names = filterOut(names, ["AudioContext", "AudioNode", "AnalyserNode", "AudioBuffer", "AudioBufferSourceNode", "AudioDestinationNode", "AudioParam", "AudioListener", "AudioWorklet", "AudioWorkletGlobalScope", "AudioWorkletNode", "AudioWorkletProcessor", "BiquadFilterNode", "ChannelMergerNode", "ChannelSplitterNode", "ConstantSourceNode", "ConvolverNode", "DelayNode", "DynamicsCompressorNode", "GainNode", "IIRFilterNode", "MediaElementAudioSourceNode", "MediaStreamAudioSourceNode", "MediaStreamTrackAudioSourceNode", "MediaStreamAudioDestinationNode", "PannerNode", "PeriodicWave", "OscillatorNode", "StereoPannerNode", "WaveShaperNode", "ScriptProcessorNode", "AudioProcessingEvent"]);
+
+      // web-midi-api
+      // https://webaudio.github.io/web-midi-api/
+      names = filterOut(names, ["MIDIAccess", "MIDIConnectionEvent", "MIDIInput", "MIDIInputMap", "MIDIMessageEvent", "MIDIOutput", "MIDIOutputMap", "MIDIPort"]);
+
+      // Encoding 相关 API
+      // https://encoding.spec.whatwg.org/#dom-textencoder
+      names = filterOut(names, ["TextDecoder", "TextEncoder", "TextDecoderStream", "TextEncoderStream"]);
+
+      // Streams 标准
+      // https://streams.spec.whatwg.org/#blqs-class
+      names = filterOut(names, ["ReadableStream", "ReadableStreamDefaultReader", "ReadableStreamBYOBReader", "ReadableStreamDefaultController", "ReadableByteStreamController", "ReadableStreamBYOBRequest", "WritableStream", "WritableStreamDefaultWriter", "WritableStreamDefaultController", "TransformStream", "TransformStreamDefaultController", "ByteLengthQueuingStrategy", "CountQueuingStrategy"]);
+
+      // web RTC API
+      names = filterOut(names, ["RTCSctpTransport", "RTCEncodedAudioFrame", "RTCDtlsTransport", "RTCEncodedVideoFrame", "RTCTrackEvent", "RTCStatsReport", "RTCSessionDescription", "RTCRtpTransceiver", "RTCRtpSender", "RTCRtpReceiver", "RTCPeerConnectionIceEvent", "RTCPeerConnectionIceErrorEvent", "RTCPeerConnection", "RTCIceCandidate", "RTCErrorEvent", "RTCError", "RTCDataChannelEvent", "RTCDataChannel", "RTCDTMFToneChangeEvent", "RTCDTMFSender", "RTCCertificate"]);
+
+      // MediaStream API
+      names = filterOut(names, ["MediaStreamTrackEvent", "MediaStreamTrack", "MediaStreamEvent", "MediaStream", "MediaRecorder", "MediaEncryptedEvent", "MediaCapabilities"]);
+
+      // IndexedDB API
+      names = filterOut(names, ["IDBVersionChangeEvent", "IDBTransaction", "IDBRequest", "IDBOpenDBRequest", "IDBObjectStore", "IDBKeyRange", "IDBIndex", "IDBFactory", "IDBDatabase", "IDBCursorWithValue", "IDBCursor"]);
+
+      // Geolocation API
+      names = filterOut(names, ["GeolocationPositionError", "GeolocationPosition", "GeolocationCoordinates", "Geolocation"]);
+
+      // WebUSB API
+      // https://wicg.github.io/webusb/
+      names = filterOut(names, ["USB", "USBAlternateInterface", "USBConfiguration", "USBConnectionEvent", "USBDevice", "USBEndpoint", "USBInTransferResult", "USBInterface", "USBIsochronousInTransferPacket", "USBIsochronousInTransferResult", "USBIsochronousOutTransferPacket", "USBIsochronousOutTransferResult", "USBOutTransferResult"]);
+
+      // xpath
+      // https://www.w3.org/TR/DOM-Level-3-XPath/xpath.html
+      names = filterOut(names, ["XPathResult", "XPathExpression", "XPathEvaluator"]);
+
+      // sync-manager-interface 静默同步 API
+      // https://wicg.github.io/background-sync/spec/#sync-manager-interface
+      names = filterOut(names, ["SyncManager"]);
+
+      // WebXR API
+      // https://www.w3.org/TR/webxr/
+      names = filterOut(names, ["XRWebGLLayer", "XRViewport", "XRViewerPose", "XRView", "XRTransientInputHitTestSource", "XRTransientInputHitTestResult", "XRSystem", "XRSpace", "XRSessionEvent", "XRSession", "XRRigidTransform", "XRRenderState", "XRReferenceSpaceEvent", "XRReferenceSpace", "XRRay", "XRPose", "XRLayer", "XRInputSourcesChangeEvent", "XRInputSourceEvent", "XRInputSourceArray", "XRInputSource", "XRHitTestSource", "XRHitTestResult", "XRFrame", "XRDOMOverlayState", "XRBoundedReferenceSpace", "XRAnchorSet", "XRAnchor"]);
+
+      // SVG API
+      // https://www.w3.org/TR/SVG/
+      names = filterOut(names, ["SVGUnitTypes", "SVGTransformList", "SVGTransform", "SVGStringList", "SVGRect", "SVGPreserveAspectRatio", "SVGPointList", "SVGPoint", "SVGNumberList", "SVGNumber", "SVGMatrix", "SVGLengthList", "SVGLength", "SVGAnimatedTransformList", "SVGAnimatedString", "SVGAnimatedRect", "SVGAnimatedPreserveAspectRatio", "SVGAnimatedNumberList", "SVGAnimatedNumber", "SVGAnimatedLengthList", "SVGAnimatedLength", "SVGAnimatedInteger", "SVGAnimatedEnumeration", "SVGAnimatedBoolean", "SVGAnimatedAngle", "SVGAngle"]);
+      
+      // Web API
+      // https://developer.mozilla.org/en-US/docs/Web/API
+      names = filterOut(names, [
+        "DOMError",
+        "CanvasCaptureMediaStreamTrack",
+        "BlobEvent",
+        "BeforeInstallPromptEvent",
+        "BatteryManager",
+        "BaseAudioContext",
+        "AudioScheduledSourceNode",
+        "AudioParamMap",
+        "XMLSerializer",
+        "WheelEvent",
+        "VisualViewport",
+        "VTTCue",
+        "URLSearchParams",
+        "URL",
+        "UIEvent",
+        "TreeWalker",
+        "TransitionEvent",
+        "TouchList",
+        "TouchEvent",
+        "Touch",
+        "TextEvent",
+        "TaskAttributionTiming",
+        "StyleSheetList",
+        "StyleSheet",
+        "StylePropertyMapReadOnly",
+        "StylePropertyMap",
+        "StaticRange",
+        "Selection",
+        "SecurityPolicyViolationEvent",
+        "Screen",
+        "Response",
+        "ResizeObserverEntry",
+        "ResizeObserver",
+        "Request",
+        "ReportingObserver",
+        "Range",
+        "ProgressEvent",
+        "PointerEvent",
+        "PerformanceTiming",
+        "PerformanceServerTiming",
+        "PerformanceResourceTiming",
+        "PerformancePaintTiming",
+        "PerformanceObserverEntryList",
+        "PerformanceObserver",
+        "PerformanceNavigationTiming",
+        "PerformanceNavigation",
+        "PerformanceMeasure",
+        "PerformanceMark",
+        "PerformanceLongTaskTiming",
+        "PerformanceEventTiming",
+        "PerformanceEntry",
+        "PerformanceElementTiming",
+        "Performance",
+        "NodeList",
+        "NodeIterator",
+        "NodeFilter",
+        "NamedNodeMap",
+        "MutationRecord",
+        "MutationObserver",
+        "MutationEvent",
+        "MouseEvent",
+        "MediaQueryListEvent",
+        "MediaQueryList",
+        "MediaList",
+        "LayoutShift",
+        "LargestContentfulPaint",
+        "KeyframeEffect",
+        "KeyboardEvent",
+        "IntersectionObserverEntry",
+        "IntersectionObserver",
+        "InputEvent",
+        "InputDeviceCapabilities",
+        "IdleDeadline",
+        "Headers",
+        "HTMLOptionsCollection",
+        "HTMLFormControlsCollection",
+        "HTMLCollection",
+        "FormData",
+        "FontFaceSetLoadEvent",
+        "FontFace",
+        "FocusEvent",
+        "FileReader",
+        "FileList",
+        "File",
+        "EventTarget",
+        "Event",
+        "DOMTokenList",
+        "DOMRectReadOnly",
+        "DOMRectList",
+        "DOMRect",
+        "DOMQuad",
+        "DOMPointReadOnly",
+        "DOMPoint",
+        "DOMParser",
+        "DOMMatrixReadOnly",
+        "DOMMatrix",
+        "DOMImplementation",
+        "DOMException",
+        "CustomEvent",
+        "CompositionEvent",
+        "ClipboardEvent",
+        "CSSVariableReferenceValue",
+        "CSSUnparsedValue",
+        "CSSUnitValue",
+        "CSSTranslate",
+        "CSSTransformValue",
+        "CSSTransformComponent",
+        "CSSSupportsRule",
+        "CSSStyleValue",
+        "CSSStyleSheet",
+        "CSSStyleRule",
+        "CSSStyleDeclaration",
+        "CSSSkewY",
+        "CSSSkewX",
+        "CSSSkew",
+        "CSSScale",
+        "CSSRuleList",
+        "CSSRule",
+        "CSSRotate",
+        "CSSPositionValue",
+        "CSSPerspective",
+        "CSSPageRule",
+        "CSSNumericValue",
+        "CSSNumericArray",
+        "CSSNamespaceRule",
+        "CSSMediaRule",
+        "CSSMatrixComponent",
+        "CSSMathValue",
+        "CSSMathSum",
+        "CSSMathProduct",
+        "CSSMathNegate",
+        "CSSMathMin",
+        "CSSMathMax",
+        "CSSMathInvert",
+        "CSSKeywordValue",
+        "CSSKeyframesRule",
+        "CSSKeyframeRule",
+        "CSSImportRule",
+        "CSSImageValue",
+        "CSSGroupingRule",
+        "CSSFontFaceRule",
+        "CSS",
+        "CSSConditionRule",
+        "Blob",
+        "AnimationEvent",
+        "AnimationEffect",
+        "Animation",
+        "AbortSignal",
+        "AbortController",
+      ]);
+
+      // h5
+      names = filterOut(names, ["personalbar", "origin", "external", "screen", "innerWidth", "innerHeight", "scrollX", "pageXOffset", "scrollY", "pageYOffset", "visualViewport", "screenX", "screenY", "outerWidth", "outerHeight", "devicePixelRatio", "clientInformation", "event", "offscreenBuffering", "screenLeft", "screenTop", "defaultStatus", "defaultstatus", "styleMedia", "isSecureContext", "performance", "queueMicrotask", "requestAnimationFrame", "cancelAnimationFrame", "captureEvents", "releaseEvents", "requestIdleCallback", "cancelIdleCallback", "getComputedStyle", "matchMedia", "moveTo", "moveBy", "resizeTo", "resizeBy", "scroll", "scrollTo", "scrollBy", "getSelection", "find", "fetch", "btoa", "atob", "setTimeout", "clearTimeout", "setInterval", "clearInterval", "createImageBitmap", "blur", "indexedDB", "sessionStorage", "localStorage"]);
+
+      console.log("names.length:", names.length);
+      // let opts = Object.assign(names).sort((a, b) => b.localeCompare(a));
+      console.log(
+        "opt:",
+        names.sort((a, b) => b.localeCompare(a))
+      );
+    </script>
+  </body>
+</html>
