@@ -1,4 +1,8 @@
 # 学习笔记
+- setInterval
+- setTimeout
+- requestAnimationFrame 
+
 
 #学号: G20200447060043
 #姓名: 陆超
