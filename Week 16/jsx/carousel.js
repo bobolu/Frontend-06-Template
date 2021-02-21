@@ -9,9 +9,7 @@ export class Carousel extends Component {
   constructor() {
     super();
   }
-  // setAttribute(name, value) {
-  //   this.attributes[name] = value;
-  // }
+
   render() {
     // console.log("window.innerWidth:",window.innerWidth)
     this.root = document.createElement("div");
@@ -22,7 +20,7 @@ export class Carousel extends Component {
       this.root.appendChild(child);
     }
     enableGesture(this.root);
-    let timeline = new Timeline();
+    let timeline = new Timeline;
     timeline.start();
 
     let handler = null;
@@ -38,6 +36,7 @@ export class Carousel extends Component {
     this.root.addEventListener("start", (event) => {
       timeline.pause();
       clearInterval(handler);
+
       if (Date.now() - t < 300) {
         let progress = (Date.now() - t) / 300;
         ax = ease(progress) * 500 - 500;
@@ -53,14 +52,14 @@ export class Carousel extends Component {
     this.root.addEventListener("pan", (event) => {
       let x = event.clientX - event.startX - ax;
       let current = this[STATE].position - (x - (x % 500)) / 500;
-      let evw = event.path[0].clientWidth;
+      let evw = 500;//event.path[0].clientWidth;
       for (let offset of [-1, 0, 1]) {
         let pos = current + offset;
         pos = ((pos % children.length) + children.length) % children.length;
         // console.log(pos);
         children[pos].style.transition = "none";
         children[pos].style.transform = `translateX(${
-          -evw * pos + offset * evw + x
+          -evw * pos + offset * evw + x % evw
         }px)`;
       }
     });
@@ -71,10 +70,10 @@ export class Carousel extends Component {
       handler = setInterval(nexpic, 3000);
 
       let x = event.clientX - event.startX - ax;
-      let current = this[STATE].position - (x % 500) / 500;
-      let evw = event.path[0].clientWidth;
+      let current = this[STATE].position - ((x - x % 500) / 500);
+      let evw = 500;//event.path[0].clientWidth;
 
-      let direction = Math.round((x - (x % 500)) / 500);
+      let direction = Math.round(((x % 500)) / 500);
 
       if (event.isFlick) {
         if (event.velocity < 0) {
@@ -87,9 +86,9 @@ export class Carousel extends Component {
 
       for (let offset of [-1, 0, 1]) {
         let pos = current + offset;
-        pos = ((pos % children.length) + children.length) % children.length;
+        pos = (pos % children.length + children.length) % children.length;
         children[pos].style.transition = "none";
-        console.log("none?",pos)
+        // console.log("none?",pos)
         // children[pos].style.transform = `translateX(${ - evw * pos + offset * evw + x }px)`;
         timeline.add(
           new Animation(

@@ -1,5 +1,5 @@
-import { Component, STATE, ATTRIBUTE, createElement } from "./framework.js";
-
+import { Component, ATTRIBUTE, createElement } from "./framework.js";
+export { ATTRIBUTE } from './framework';
 export class List extends Component {
   constructor() {
     super();
@@ -11,6 +11,6 @@ export class List extends Component {
   }
   appendChild(child) {
     this.template = child;
-    this.render()
+    this.render();
   }
 }

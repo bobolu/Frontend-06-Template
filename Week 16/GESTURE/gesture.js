@@ -6,16 +6,17 @@
 
 // new Listener(new Recognizer(dispatch))
 export class Dispatcher {
-  constructor(element) {
-    this.element = element;
-  }
-  dispatch(type, properties) {
-    let event = new Event(type);
-    for (let item in properties) {
-      event[item] = properties[item];
+    constructor(element) {
+        this.element = element;
     }
-    this.element.dispatchEvent(event);
-  }
+    dispatch(type, properties) {
+        let event = new Event(type);
+        for (let item in properties) {
+          event[item] = properties[item];
+        }
+        this.element.dispatchEvent(event);
+      }
+
 }
 
 export class Listener {
@@ -51,7 +52,6 @@ export class Listener {
           button = button << 1;
         }
       };
-
       let mouseup = (event) => {
         let context = contexts.get("mouse" + (1 << event.button));
         recognizer.end(event, context);
@@ -81,14 +81,12 @@ export class Listener {
         recognizer.start(touch, context);
       }
     });
-
     element.addEventListener("touchmove", (event) => {
       for (let touch of event.changedTouches) {
         let context = contexts.get(touch.identifier);
         recognizer.move(touch, context);
       }
     });
-
     element.addEventListener("touchend", (event) => {
       for (let touch of event.changedTouches) {
         let context = contexts.get(touch.identifier);
@@ -96,7 +94,6 @@ export class Listener {
         contexts.delete(touch.identifier);
       }
     });
-
     element.addEventListener("touchcancel", (event) => {
       for (let touch of event.changedTouches) {
         let context = contexts.get(touch.identifier);
@@ -114,18 +111,12 @@ export class Recognizer {
   start(point, context) {
     context.startX = point.clientX;
     context.startY = point.clientY;
-
-    this.dispatcher.dispatch("start", {
-      clientX: point.clientX,
-      clientY: point.clientY
-    });
-
     context.points = [
       {
         t: Date.now(),
         x: point.clientX,
-        y: point.clientY
-      }
+        y: point.clientY,
+      },
     ];
 
     context.isTap = true;
@@ -155,7 +146,7 @@ export class Recognizer {
         startY: context.startY,
         clientX: point.clientX,
         clientY: point.clientY,
-        isVertical: context.isVertical
+        isVertical: context.isVertical,
       });
       clearTimeout(context.handler);
     }
@@ -165,7 +156,7 @@ export class Recognizer {
         startY: context.startY,
         clientX: point.clientX,
         clientY: point.clientY,
-        isVertical: context.isVertical
+        isVertical: context.isVertical,
       });
     }
     context.points = context.points.filter(
@@ -174,7 +165,7 @@ export class Recognizer {
     context.points.push({
       t: Date.now(),
       x: point.clientX,
-      y: point.clientY
+      y: point.clientY,
     });
   }
 
@@ -188,13 +179,10 @@ export class Recognizer {
       this.dispatcher.dispatch("press end", {});
     }
     context.points = context.points.filter(
-      (point) => {
-        (Date.now() - point.t) < 500
-      }
+      (point) => Date.now() - point.t < 500
     );
 
     let d, v;
-    
     if (!context.points.length) {
       v = 0;
     } else {
@@ -204,7 +192,6 @@ export class Recognizer {
       );
       v = d / (Date.now() - context.points[0].t);
     }
-    
     if (v > 1.5) {
       this.dispatcher.dispatch("flick", {
         startX: context.startX,
@@ -213,7 +200,6 @@ export class Recognizer {
         clientY: point.clientY,
         isVertical: context.isVertical,
         isFlick: context.isFlick,
-        velocity: v
       });
       context.isFlick = true;
     } else {
@@ -228,27 +214,16 @@ export class Recognizer {
         clientY: point.clientY,
         isVertical: context.isVertical,
         isFlick: context.isFlick,
-        velocity: v
       });
     }
-
-    this.dispatcher.dispatch("end", {
-      startX: context.startX,
-      startY: context.startY,
-      clientX: point.clientX,
-      clientY: point.clientY,
-      isVertical: context.isVertical,
-      isFlick: context.isFlick,
-      velocity: v
-    });
   }
 
   cancel(point, context) {
     clearTimeout(context.handler);
-    this.dispatcher.dispatch("cancel", {});
+    this.dispatcher.dispatch("cancel", {})
   }
 }
 
 export function enableGesture(element) {
-  new Listener(element, new Recognizer(new Dispatcher(element)));
+    new Listener(element, new Recognizer(new Dispatcher(element)))
 }

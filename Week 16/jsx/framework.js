@@ -1,12 +1,12 @@
 export function createElement(type, attributes, ...children) {
 
-  // console.log("type:", type);
+  console.log("type:", type);
 
   let element;
   if (typeof type === "string") {
     element = new ElementWrapper(type);
   } else {
-    element = new type();
+    element = new type;
   }
   for (let name in attributes) {
     element.setAttribute(name, attributes[name]);
@@ -23,13 +23,13 @@ export function createElement(type, attributes, ...children) {
       element.appendChild(child);
     }
   };
-  processChildren();
+  processChildren(children);
 
   return element;
 }
 
 export const STATE = Symbol("state");
-export const ATTRIBUTE = Symbol("state");
+export const ATTRIBUTE = Symbol("attribute");
 
 export class Component {
   constructor(type) {
