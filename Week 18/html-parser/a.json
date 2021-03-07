@@ -1,0 +1,173 @@
+{
+  "type": "document",
+  "children": [
+    {
+      "type": "element",
+      "children": [
+        {
+          "type": "text",
+          "content": " "
+        },
+        {
+          "type": "element",
+          "children": [
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "element",
+              "children": [
+                {
+                  "type": "text",
+                  "content": "test html"
+                }
+              ],
+              "attributes": [],
+              "tagName": "title",
+              "computedStyle": {}
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "element",
+              "children": [
+                {
+                  "type": "text",
+                  "content": " * { margin: 0; padding: 0; } .testp { font-size:16px; } "
+                }
+              ],
+              "attributes": [],
+              "tagName": "style",
+              "computedStyle": {}
+            },
+            {
+              "type": "text",
+              "content": " "
+            }
+          ],
+          "attributes": [],
+          "tagName": "head",
+          "computedStyle": {}
+        },
+        {
+          "type": "text",
+          "content": " "
+        },
+        {
+          "type": "element",
+          "children": [
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "element",
+              "children": [
+                {
+                  "type": "element",
+                  "children": [],
+                  "attributes": [
+                    {
+                      "name": "class",
+                      "value": "cscs"
+                    },
+                    {
+                      "name": "isSelfClosing",
+                      "value": true
+                    }
+                  ],
+                  "tagName": "img",
+                  "computedStyle": {}
+                }
+              ],
+              "attributes": [],
+              "tagName": "div",
+              "computedStyle": {}
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "element",
+              "children": [
+                {
+                  "type": "element",
+                  "children": [],
+                  "attributes": [
+                    {
+                      "name": "id",
+                      "value": "cs"
+                    },
+                    {
+                      "name": "isSelfClosing",
+                      "value": true
+                    }
+                  ],
+                  "tagName": "img",
+                  "computedStyle": {}
+                }
+              ],
+              "attributes": [],
+              "tagName": "div",
+              "computedStyle": {}
+            },
+            {
+              "type": "text",
+              "content": " "
+            },
+            {
+              "type": "element",
+              "children": [
+                {
+                  "type": "text",
+                  "content": "this is a p "
+                }
+              ],
+              "attributes": [
+                {
+                  "name": "class",
+                  "value": "testp"
+                }
+              ],
+              "tagName": "p",
+              "computedStyle": {
+                "font-size": {
+                  "value": "16px",
+                  "specificity": [
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                }
+              }
+            },
+            {
+              "type": "text",
+              "content": " "
+            }
+          ],
+          "attributes": [],
+          "tagName": "body",
+          "computedStyle": {}
+        },
+        {
+          "type": "text",
+          "content": " "
+        }
+      ],
+      "attributes": [
+        {
+          "name": "lang",
+          "value": "zh-CN"
+        }
+      ],
+      "tagName": "html",
+      "computedStyle": {}
+    }
+  ]
+}
