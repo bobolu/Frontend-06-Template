@@ -143,14 +143,8 @@ const puppeteer = require('puppeteer');
 })();
 ```
 
-
-
-
 参考资料
 1. Git-Hooks: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
 2. eslint: https://eslint.org/
 3. headless-chrome: https://developers.google.com/web/updates/2017/04/headless-chrome
 4. puppeteer: https://npmjs.com/package/puppeteer
-
-
-
